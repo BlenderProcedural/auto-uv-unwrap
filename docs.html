@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auto UV Unwrap Docs</title>
+<meta name="description" content="Documentation for the Auto UV Unwrap Blender add-on: installation, engines, quality presets, every setting, Analyze UVs, the viewport HUD and troubleshooting.">
+<link rel="icon" href="images/logo.png">
+<style>
+:root {
+  --bg: #10131c; --card: #1a2030; --line: #2a3245;
+  --text: #eef1f7; --muted: #9aa3b8; --accent: #3ddbb6; --gold: #ffd166;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 16.5px/1.65 "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+.wrap { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+header { padding: 40px 0 30px; background: radial-gradient(ellipse 80% 90% at 50% 0%, #232a3d 0%, var(--bg) 75%); }
+.brand { display: flex; align-items: center; gap: 14px; }
+.brand img { width: 52px; height: 52px; }
+.brand h1 { font-size: clamp(28px, 4.5vw, 42px); margin: 0; letter-spacing: -.3px; line-height: 1.1; }
+.brand small { display: block; font-size: 15px; color: var(--muted); font-weight: 400; letter-spacing: 0; margin-top: 4px; }
+.accent { color: var(--accent); }
+.muted { color: var(--muted); }
+section { padding: 34px 0; border-top: 1px solid var(--line); scroll-margin-top: 10px; }
+h2 { font-size: 28px; margin: 0 0 14px; letter-spacing: -.2px; line-height: 1.2; }
+h2 .n { color: var(--accent); margin-right: 8px; }
+h3 { font-size: 19px; margin: 24px 0 8px; }
+p { margin: 0 0 12px; color: #c7cede; }
+a { color: var(--accent); }
+ol, ul { margin: 0 0 12px; padding-left: 22px; color: #c7cede; }
+li { margin-bottom: 6px; }
+b, strong { color: var(--text); }
+kbd { font-family: inherit; font-size: 13.5px; background: #262d3f; border: 1px solid #3a4359; border-bottom-width: 3px; border-radius: 6px; padding: 0 7px; color: #e6eaf3; white-space: nowrap; }
+code { font-family: Consolas, "SF Mono", monospace; font-size: 14.5px; background: #1e2433; border: 1px solid var(--line); border-radius: 5px; padding: 1px 6px; color: #e3e7f0; }
+.toc { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px 22px; margin-top: 26px; padding: 18px 22px;
+  background: var(--card); border: 1px solid var(--line); border-radius: 14px; }
+.toc a { color: #cfd6e4; text-decoration: none; font-size: 15px; }
+.toc a:hover { color: var(--accent); }
+.toc a span { color: var(--accent); margin-right: 6px; font-weight: 700; }
+.tbl-wrap { overflow-x: auto; margin: 14px 0 16px; border: 1px solid var(--line); border-radius: 12px; }
+table { width: 100%; border-collapse: collapse; font-size: 15px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+th { background: #171c29; color: var(--muted); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: .8px; }
+td:first-child { color: var(--text); font-weight: 600; white-space: nowrap; }
+.note { background: rgba(61,219,182,.08); border: 1px solid rgba(61,219,182,.3); border-radius: 12px; padding: 12px 16px; margin: 14px 0; color: #cfe9e2; }
+.warn { background: rgba(255,209,102,.07); border-color: rgba(255,209,102,.35); color: #f1e3bf; }
+.shot { border-radius: 12px; border: 1px solid var(--line); margin: 16px 0; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.two > * { min-width: 0; }
+details { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; margin-bottom: 10px; }
+summary { cursor: pointer; font-weight: 600; color: var(--text); }
+details p { margin: 10px 0 2px; }
+footer { padding: 28px 0 44px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; text-align: center; }
+@media (max-width: 760px) {
+  .toc { grid-template-columns: 1fr 1fr; }
+  .two { grid-template-columns: 1fr; }
+  td:first-child { white-space: normal; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand"><img src="images/logo.png" alt=""><h1>Auto UV <span class="accent">Unwrap</span> Docs<small>Version 1.1 · Blender 4.2 and newer</small></h1></div>
+    <nav class="toc">
+      <a href="#install"><span>1</span>Installation</a>
+      <a href="#quick"><span>2</span>Quick start</a>
+      <a href="#where"><span>3</span>Where to find it</a>
+      <a href="#engines"><span>4</span>Engines</a>
+      <a href="#quality"><span>5</span>Quality presets</a>
+      <a href="#settings"><span>6</span>Settings reference</a>
+      <a href="#analyze"><span>7</span>Analyze UVs</a>
+      <a href="#hud"><span>8</span>Viewport HUD</a>
+      <a href="#numbers"><span>9</span>Reading the results</a>
+      <a href="#tips"><span>10</span>Tips</a>
+      <a href="#faq"><span>11</span>Troubleshooting</a>
+      <a href="#req"><span>12</span>Requirements</a>
+    </nav>
+  </div>
+</header>
+
+<section id="install">
+  <div class="wrap">
+    <h2><span class="n">1</span>Installation</h2>
+    <p>Auto UV Unwrap is a Blender extension. You get one <code>.zip</code> that works on every supported platform. Do not unzip it.</p>
+    <ol>
+      <li>Open Blender 4.2 or newer.</li>
+      <li>Drag and drop the <code>.zip</code> file onto the Blender window, or go to <b>Edit › Preferences › Get Extensions</b>, open the <b>▾</b> menu in the top right and choose <b>Install from Disk…</b></li>
+      <li>Make sure <b>Auto UV Unwrap</b> is enabled in the extensions list.</li>
+      <li>Press <kbd>N</kbd> in the 3D Viewport: you will see a new <b>Auto UV</b> tab.</li>
+    </ol>
+    <div class="note">The add-on preferences show whether the bundled <b>xatlas</b> library loaded on your system. Smart Parts and Smart UV Project work without it.</div>
+    <h3>Updating</h3>
+    <p>Install the new <code>.zip</code> the same way. Blender replaces the old version. Restart Blender if the panel does not refresh.</p>
+  </div>
+</section>
+
+<section id="quick">
+  <div class="wrap">
+    <h2><span class="n">2</span>Quick start</h2>
+    <ol>
+      <li>Select one or more mesh objects in <b>Object Mode</b>, or select faces in <b>Edit Mode</b>.</li>
+      <li>Open the <b>Auto UV</b> tab in the sidebar (<kbd>N</kbd>).</li>
+      <li>Leave Engine on <b>Smart Parts</b> and Quality on <b>Balanced</b>.</li>
+      <li>Click <b>Auto Unwrap</b>.</li>
+    </ol>
+    <p>Seams are written to the mesh, the UVs are unwrapped and packed into 0–1, and the <b>Results</b> panel, the status bar and the HUD show the numbers. Not happy? Press <kbd>Ctrl</kbd>+<kbd>Z</kbd> once: UVs, seams, selection and mode all go back to how they were.</p>
+    <img class="shot" src="images/10_workflow.jpg" alt="Auto UV panel and the four steps" loading="lazy">
+  </div>
+</section>
+
+<section id="where">
+  <div class="wrap">
+    <h2><span class="n">3</span>Where to find it</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Place</th><th>What is there</th></tr>
+      <tr><td>3D Viewport › Sidebar › Auto UV</td><td>The full panel: engine, quality, Auto Unwrap, Analyze UVs, all settings, Results and the HUD switch.</td></tr>
+      <tr><td>Edit Mode › <kbd>U</kbd> menu</td><td><b>Auto UV Unwrap</b> entry at the bottom of the UV menu.</td></tr>
+      <tr><td>UV Editor › UV menu</td><td><b>Auto UV Unwrap</b> entry.</td></tr>
+      <tr><td>UV Editor › Sidebar › Auto UV</td><td>Engine, quality, the two buttons, Results and a toggle for Blender's stretch overlay.</td></tr>
+      <tr><td>3D Viewport › Object menu</td><td><b>Auto UV Unwrap</b> entry for Object Mode.</td></tr>
+    </table></div>
+    <p>The menu entries use the settings from the sidebar panel.</p>
+  </div>
+</section>
+
+<section id="engines">
+  <div class="wrap">
+    <h2><span class="n">4</span>Engines</h2>
+    <p>Pick the engine from the picture gallery at the top of the panel.</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>Engine</th><th>How it works</th><th>Use it when</th></tr>
+      <tr><td>Smart Parts <span class="muted">(default)</span></td><td>Finds the parts of the model from its shape (sharp and concave edges, topology), flattens each part, measures the distortion and splits again only where a chart is above the target. Small charts are merged back when the stretch allows.</td><td>Almost always. Fewest islands and low stretch.</td></tr>
+      <tr><td>xatlas</td><td>Chart segmentation from the bundled xatlas library, then flattened with Blender's own solver and packed.</td><td>Hard-surface and CAD-like meshes, or as a second opinion. Often the lowest distortion with more islands.</td></tr>
+      <tr><td>Smart UV Project</td><td>Blender's built-in Smart UV Project, run with the add-on's packing and margin.</td><td>As a quick baseline to compare against.</td></tr>
+    </table></div>
+    <img class="shot" src="images/08_engines_quality.jpg" alt="Engine and quality galleries" loading="lazy">
+  </div>
+</section>
+
+<section id="quality">
+  <div class="wrap">
+    <h2><span class="n">5</span>Quality presets</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Setting</th><th>Fast</th><th>Balanced</th><th>Quality</th></tr>
+      <tr><td>Distortion threshold</td><td>0.25</td><td>0.12</td><td>0.06</td></tr>
+      <tr><td>Max split rounds</td><td>2</td><td>4</td><td>6</td></tr>
+      <tr><td>Unwrap method</td><td>Angle Based</td><td>Minimum Stretch</td><td>Minimum Stretch</td></tr>
+      <tr><td>Merge small charts</td><td>Off</td><td>On</td><td>On</td></tr>
+      <tr><td>Pack shape</td><td>Bounding Box</td><td>Exact Shape</td><td>Exact Shape</td></tr>
+    </table></div>
+    <p><b>Custom</b> unlocks the <b>Custom Quality</b> sub-panel so you can set every value yourself (see below).</p>
+    <p class="muted">Measured with Balanced and Smart Parts: a 7.9k-face Suzanne unwraps in about 1.4 s, a 10.2k-face UV sphere in about 2.0 s.</p>
+  </div>
+</section>
+
+<section id="settings">
+  <div class="wrap">
+    <h2><span class="n">6</span>Settings reference</h2>
+
+    <h3>Seams</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Setting</th><th>Default</th><th>What it does</th></tr>
+      <tr><td>Existing Seams</td><td>Keep My Seams</td><td><b>Keep My Seams</b>: seams you marked yourself are always kept; seams from a previous Auto UV run are replaced. <b>Replace All</b>: clears every seam of the processed faces first.</td></tr>
+      <tr><td>Sharp Angle</td><td>60°</td><td>Edges sharper than this always become seams. Set 180° to turn it off.</td></tr>
+    </table></div>
+    <div class="note warn">Smart UV Project ignores existing seams. That is how Blender's operator works.</div>
+
+    <h3>UV Map</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Setting</th><th>Default</th><th>What it does</th></tr>
+      <tr><td>UV Map</td><td>Active UV Map</td><td><b>Active UV Map</b> writes into the active map (one is created if the mesh has none). <b>Named UV Map</b> writes into the map named below.</td></tr>
+      <tr><td>Name</td><td>AutoUV</td><td>Name of the UV map to write into. Created if missing. Only used with Named UV Map.</td></tr>
+    </table></div>
+
+    <h3>Packing</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Setting</th><th>Default</th><th>What it does</th></tr>
+      <tr><td>Texture Size</td><td>2048</td><td>Texture resolution (256 to 8192) used to turn the pixel margin into UV space.</td></tr>
+      <tr><td>Margin</td><td>4 px</td><td>Space between islands in pixels at that texture size (0–64).</td></tr>
+      <tr><td>Rotate</td><td>On</td><td>Rotate islands for a tighter pack.</td></tr>
+      <tr><td>Uniform Density</td><td>On</td><td>Scale islands to the same texel density before packing. Only changes Smart UV Project; Smart Parts and xatlas always keep every chart at its true 3D size.</td></tr>
+      <tr><td>Pack Together</td><td>On</td><td>Pack all selected objects into one shared UV space. Off: each object fills 0–1 on its own.</td></tr>
+    </table></div>
+
+    <h3>Custom Quality <span class="muted">(Quality set to Custom)</span></h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Setting</th><th>Default</th><th>What it does</th></tr>
+      <tr><td>Distortion Threshold</td><td>0.12</td><td>Charts with more distortion than this are split again. Lower = less stretch, more islands.</td></tr>
+      <tr><td>Max Split Rounds</td><td>4</td><td>How many times a chart may be split (0–10).</td></tr>
+      <tr><td>Unwrap Method</td><td>Minimum Stretch</td><td>Angle Based (ABF), Conformal (LSCM) or Minimum Stretch (SLIM; falls back to Angle Based where SLIM is not available).</td></tr>
+      <tr><td>Pack Shape</td><td>Exact Shape</td><td>Bounding Box (fastest), Convex Hull, or Exact Shape (tightest).</td></tr>
+      <tr><td>Merge Small Charts</td><td>On</td><td>Merge small charts back into their neighbours when the distortion allows it.</td></tr>
+    </table></div>
+    <div class="note warn">Convex Hull packing can be slow in Blender's packer (several seconds up to about a minute on big meshes). Exact Shape is usually faster and tighter.</div>
+
+    <h3>Results</h3>
+    <p>After every Auto Unwrap or Analyze UVs the Results panel lists the operation and engine, <b>islands</b>, <b>seams</b>, <b>flipped faces</b>, <b>average</b> and <b>max distortion</b> against the target, and the <b>time</b>. The same summary appears in Blender's status bar. <b>Distortion Colors</b> in this panel makes Analyze UVs also paint a heatmap (see next section).</p>
+  </div>
+</section>
+
+<section id="analyze">
+  <div class="wrap">
+    <h2><span class="n">7</span>Analyze UVs</h2>
+    <p><b>Analyze UVs</b> measures the active UV map of the selected meshes without changing it. It works on any UVs: hand-made, from another tool, or from Auto UV.</p>
+    <ul>
+      <li>Reports islands, average and max distortion and flipped faces in the Results panel and the HUD.</li>
+      <li>With <b>Distortion Colors</b> on, it also writes a color attribute named <code>AutoUV_Distortion</code> and switches the viewport color to <b>Attribute</b> so you see a heatmap on the mesh (blue = low stretch, red = high stretch).</li>
+      <li>In the UV Editor's Auto UV panel you can toggle Blender's own <b>stretch overlay</b> and its type (area or angle).</li>
+    </ul>
+    <img class="shot" src="images/03_distortion_heatmap.jpg" alt="Distortion heatmap" loading="lazy">
+  </div>
+</section>
+
+<section id="hud">
+  <div class="wrap">
+    <h2><span class="n">8</span>Viewport HUD</h2>
+    <p>The HUD is a small card drawn in the 3D Viewport with the latest result: engine, islands, seams, flipped faces, time, a distortion bar against your target and a mini UV layout preview.</p>
+    <ul>
+      <li>Turn it on with the HUD button in the header of the Auto UV panel, or in the <b>Viewport HUD</b> sub-panel.</li>
+      <li>In <b>Edit › Preferences › Add-ons › Auto UV Unwrap</b> you can set:
+        <ul>
+          <li><b>Corner</b>: Top Left, Top Right, Bottom Left (default) or Bottom Right</li>
+          <li><b>HUD Scale</b>: 0.5–2.0, multiplied by Blender's Resolution Scale</li>
+          <li><b>HUD Opacity</b>: background opacity, 0.2–1.0</li>
+          <li><b>Show UV Layout</b>: show or hide the mini UV preview</li>
+        </ul>
+      </li>
+    </ul>
+    <p>The distortion bar turns from green to amber to red as the value goes from 0 to twice your target.</p>
+    <img class="shot" src="images/09_viewport_hud.jpg" alt="Viewport HUD" loading="lazy">
+  </div>
+</section>
+
+<section id="numbers">
+  <div class="wrap">
+    <h2><span class="n">9</span>Reading the results</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Value</th><th>Meaning</th></tr>
+      <tr><td>Islands</td><td>Number of separate UV pieces. Fewer usually means fewer visible seams in your texture.</td></tr>
+      <tr><td>Seams</td><td>Number of seam edges on the mesh.</td></tr>
+      <tr><td>Distortion</td><td>How much the UVs stretch the surface, per face, weighted by area. 0 is perfect. Below the target (0.12 on Balanced) a checker texture looks even; above about 0.25 stretching becomes visible.</td></tr>
+      <tr><td>Avg / Max</td><td>Average over the whole mesh and the worst chart.</td></tr>
+      <tr><td>Flipped</td><td>Faces that are mirrored in UV space. Should be 0.</td></tr>
+      <tr><td>Time</td><td>Wall-clock time of the whole operation.</td></tr>
+    </table></div>
+  </div>
+</section>
+
+<section id="tips">
+  <div class="wrap">
+    <h2><span class="n">10</span>Tips</h2>
+    <ul>
+      <li><b>Guide the cuts:</b> mark a few seams where you want them (for example on the back of a character) and keep <b>Keep My Seams</b> on. Auto UV builds the rest around them.</li>
+      <li><b>Too many islands?</b> Raise the distortion threshold (Custom) or use Fast. <b>Too much stretch?</b> Use Quality or lower the threshold.</li>
+      <li><b>Hard-surface models:</b> lower <b>Sharp Angle</b> (for example 30–45°) so every hard edge becomes a seam.</li>
+      <li><b>Organic models:</b> raise Sharp Angle or set it to 180° and let Smart Parts decide.</li>
+      <li><b>Several objects sharing one texture:</b> select them all and keep <b>Pack Together</b> on.</li>
+      <li><b>Only part of a mesh:</b> select those faces in Edit Mode. Other faces are left as they are.</li>
+      <li><b>Compare engines:</b> unwrap, read the HUD, <kbd>Ctrl</kbd>+<kbd>Z</kbd>, switch engine, unwrap again.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <h2><span class="n">11</span>Troubleshooting</h2>
+    <details><summary>The Auto Unwrap button is greyed out</summary>
+      <p>Select at least one mesh object in Object Mode, or enter Edit Mode on a mesh. Curves, text and other object types are not supported; convert them to mesh first.</p></details>
+    <details><summary>"xatlas not available" in the preferences</summary>
+      <p>The bundled xatlas wheel could not load on this system. Reinstall the extension from the <code>.zip</code>. Smart Parts and Smart UV Project keep working without it.</p></details>
+    <details><summary>An object was skipped</summary>
+      <p>The status bar shows a "Skipped …" warning with the reason. Other selected objects are still processed. Possible reasons:</p>
+      <ul>
+        <li><b>shares mesh with …</b>: two selected objects use the same mesh data (linked duplicates). The mesh is unwrapped once, through the first object.</li>
+        <li><b>linked library data</b>: the mesh comes from a linked .blend and cannot be edited. Make it local first.</li>
+        <li><b>hidden</b>, <b>no faces</b>, <b>no faces selected</b> (Edit Mode), <b>no UV map</b> (Analyze UVs).</li>
+      </ul></details>
+    <details><summary>My own seams disappeared</summary>
+      <p>Existing Seams is set to <b>Replace All</b>, or the engine is Smart UV Project, which ignores seams. Press <kbd>Ctrl</kbd>+<kbd>Z</kbd>, set <b>Keep My Seams</b> and use Smart Parts or xatlas.</p></details>
+    <details><summary>Packing takes very long</summary>
+      <p>Pack Shape is set to Convex Hull. Switch to Exact Shape or Bounding Box (Custom Quality), or use a preset.</p></details>
+    <details><summary>The HUD does not show</summary>
+      <p>Turn on the HUD button in the panel header, then run Auto Unwrap or Analyze UVs once. Check the corner setting in the add-on preferences, and make sure viewport overlays are visible.</p></details>
+    <details><summary>Does it need the internet or a GPU?</summary>
+      <p>No. Everything runs offline on the CPU inside Blender. There is no AI model, no account and no network access.</p></details>
+  </div>
+</section>
+
+<section id="req">
+  <div class="wrap">
+    <h2><span class="n">12</span>Requirements</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Item</th><th>Supported</th></tr>
+      <tr><td>Blender</td><td>4.2 and newer, tested on 4.5 LTS and 5.2</td></tr>
+      <tr><td>Windows</td><td>x64</td></tr>
+      <tr><td>macOS</td><td>Apple Silicon (arm64) and Intel (x64)</td></tr>
+      <tr><td>Linux</td><td>x64</td></tr>
+      <tr><td>Dependencies</td><td>None to install. xatlas is bundled inside the extension.</td></tr>
+      <tr><td>Network</td><td>Not used</td></tr>
+    </table></div>
+  </div>
+</section>
+
+<footer><div class="wrap"><a href="index.html">Product page</a> · Auto UV Unwrap · GPL-3.0-or-later · bundled xatlas is MIT licensed</div></footer>
+</body>
+</html>
